@@ -1,22 +1,22 @@
-def check_in_code(s: str) -> bool:
-    """Проверяет скобки в произвольной строке, игнорируя прочий текст."""
+def check_pairs(s):
+    """Алгоритм проверки скобок. Делается просто проверкой ключей и значений"""
     pairs = {
-        ')': '(', 
-        ']': '[', 
         '}': '{',
-        }
-    opening = set(pairs.values())
+        ')': '(',
+        ']': '[',
+    }
+    openings = pairs.values()
     stack = []
 
     for ch in s:
-        if ch in opening:
+        if ch in openings:
             stack.append(ch)
-        elif ch in pairs:
-            if not stack or stack.pop() != pairs[ch]:
+        elif ch not in openings:
+            if stack.pop() != pairs[ch]:
                 return False
 
     return not stack
 
 
-print(check_in_code("def foo(a, b): return [a + b]"))  # True
-print(check_in_code("if (x > 0] { ... }"))              # False
+string = '[()()]{}'
+print(check_pairs(string))

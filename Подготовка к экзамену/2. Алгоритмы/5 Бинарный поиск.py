@@ -1,15 +1,19 @@
-def binary_search(array, target):
-    left, right = 0, len(array) - 1
-    
-    while left <= right:
-        mid = left + (right - left) // 2
-        
-        if array[mid] == target:
-            return mid
-        elif array[mid] < target:
-            left = mid + 1
+def binary_search(arr, t):
+    """
+    Бинарный поиск. Решается просто перемещением правой или левой границы. Еще важно
+    middle = (left + right) // 2
+    """
+    left = 0
+    right = len(arr) - 1
+    while right >= left:
+        middle = (left + right) // 2
+        if arr[middle] == t:
+            return middle
+        elif arr[middle] < t:
+            left = middle
         else:
-            right = mid - 1
-            
+            right = middle
 
-print(binary_search([1, 2, 5, 6, 7], 5))  # 2
+arr = [2, 9, 13, 15, 88, 100, 110]
+target = 15
+print(f"Искомный элемент {target} в массиве {arr} имеет индекс {binary_search(arr, target)}")
