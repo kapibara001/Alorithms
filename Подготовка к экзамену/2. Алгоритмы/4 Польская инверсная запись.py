@@ -5,8 +5,8 @@ def polish_read(s: str):
     mystring = s.split(' ')
     stack = []
     
-    if not mystring:
-        return
+    # if not mystring:
+    #     return
     
     for i in mystring:
         try:
