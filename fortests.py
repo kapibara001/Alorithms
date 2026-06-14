@@ -121,3 +121,43 @@ def words(s, r):
             for j in words(s, r-1):
                 yield i+j
 print(f"Слова произвольной длины: {list(words("ABC", 2))}")
+
+
+def quick_sort_razdeleniem(arr):
+    if len(arr) <= 1:
+        return arr
+
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    center = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+
+    return quick_sort_razdeleniem(left) + center + quick_sort_razdeleniem(right)
+print(f"Сортировка разделением (быстрая сортировка) [1, 8, 3, 6, 2, 6, 8, 9, 12, 15, 44, 11]: "
+      f"{quick_sort_razdeleniem([1, 8, 3, 6, 2, 6, 8, 9, 12, 15, 44, 11])}")
+
+
+def quick_sort_sliyaniem(arr):
+    if len(arr) <= 1:
+        return arr
+
+    mid = len(arr) // 2
+    left = quick_sort_sliyaniem(arr[:mid])
+    right = quick_sort_sliyaniem(arr[mid:])
+
+    result = []
+    i = j = 0
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+
+    result.extend(left[i:])
+    result.extend(right[j:])
+
+    return result
+
+print(f"Сортировка [1, 9, 2, 3, 4, 8, 7, 5, 6] разделением: {quick_sort_sliyaniem([1, 9, 2, 3, 4, 8, 7, 5, 6])}")
