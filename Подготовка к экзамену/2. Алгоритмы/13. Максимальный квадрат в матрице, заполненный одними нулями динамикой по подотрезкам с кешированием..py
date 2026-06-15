@@ -1,7 +1,4 @@
 def max_zero_square(matrix):
-    if not matrix:
-        return 0
-
     n = len(matrix)
     m = len(matrix[0])
     memo = {}
@@ -35,9 +32,9 @@ def max_zero_square(matrix):
 # пример
 matrix = [
     [0, 1, 0, 0],
-    [0, 0, 0, 0],
+    [0, 0, 1, 0],
     [1, 0, 0, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 1]
 ]
 
 print(max_zero_square(matrix))

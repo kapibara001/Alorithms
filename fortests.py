@@ -159,5 +159,116 @@ def quick_sort_sliyaniem(arr):
     result.extend(right[j:])
 
     return result
-
 print(f"Сортировка [1, 9, 2, 3, 4, 8, 7, 5, 6] разделением: {quick_sort_sliyaniem([1, 9, 2, 3, 4, 8, 7, 5, 6])}")
+
+
+def palindrome(s):
+    n = len(s)
+    dp = [[0]*n for _ in range(n)]
+
+    for i in range(n):
+        dp[i][i] = 1
+
+    for i in range(n-1, -1, -1):
+        for j in range(i+1, n):
+            if s[i] == s[j]:
+                dp[i][j] = dp[i+1][j-1] + 2
+            else:
+                dp[i][j] = max(dp[i+1][j], dp[i][j-1])
+
+    return dp[0][n-1]
+print(f"Палиндром без кэширования 'character': {palindrome('character')}")
+
+
+def palindromeCache(s):
+    memo = {}
+
+    def dp(i, j):
+        if (i, j) in memo:
+            return memo[(i, j)]
+
+        if i > j:
+            return ""
+        elif i == j:
+            return s[j]
+
+        if s[i] == s[j]:
+            return s[i] + dp(i+1, j-1) + s[j]
+        else:
+            left = dp(i+1, j)
+            right = dp(i, j-1)
+
+            if len(left) > len(right):
+                res = left
+            else:
+                res = right
+
+        memo[(i, j)] = res
+        return res
+
+    return dp(0, len(s)-1)
+print(f"Палиндром с кэшированием для 'character': {palindromeCache('character')}")
+
+
+def max_zero_square(matrix):
+    n = len(matrix)
+    m = len(matrix[0])
+    dp = [[0]*m for _ in range(n)]
+
+    max_size = 0
+    for i in range(n):
+        for j in range(m):
+            if matrix[i][j] == 0:
+                if i == 0 or j == 0:
+                    dp[i][j] = 1
+                else:
+                    dp[i][j] = 1 + min(
+                        dp[i-1][j],
+                        dp[i][j-1],
+                        dp[i-1][j-1],
+                    )
+                max_size = max(max_size, dp[i][j])
+
+    return max_size
+print("Поиск максимального квадрата из нулей в матрице:", max_zero_square([
+    [0, 0, 1],
+    [0, 0, 1],
+    [1, 0, 1]
+]))
+
+
+def max_zero_square_cache(matrix):
+    n = len(matrix)
+    m = len(matrix[0])
+    memo = {}
+
+    def dp(i, j):
+        if i >= n or j >= m:
+            return 0
+
+        if (i, j) in memo:
+            return memo[(i, j)]
+
+        if matrix[i][j] == 1:
+            memo[(i, j)] = 0
+        else:
+            memo[(i, j)] = 1 + min(
+                dp(i+1, j),
+                dp(i, j+1),
+                dp(i+1, j+1),
+            )
+
+        return memo[(i, j)]
+
+    max_size = 0
+    for i in range(n):
+        for j in range(m):
+            max_size = max(max_size, dp(i, j))
+
+    return max_size
+print("Поиск максимального квадрата из нулей в матрице с кэшированием:",
+      max_zero_square_cache([
+        [0, 0, 1],
+        [0, 0, 1],
+        [1, 0, 1]
+]))

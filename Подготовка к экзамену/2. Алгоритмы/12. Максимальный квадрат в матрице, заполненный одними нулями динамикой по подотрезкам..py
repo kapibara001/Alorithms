@@ -1,11 +1,8 @@
 def max_zero_square(matrix):
-    if not matrix:
-        return 0
-
     n = len(matrix)
     m = len(matrix[0])
 
-    dp = [[0] * m for _ in range(n)]
+    dp = [[0]*m for _ in range(n)]
     max_side = 0
 
     for i in range(n):

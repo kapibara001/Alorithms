@@ -1,26 +1,35 @@
-def lps(s):
-    n = len(s)
-    memo = {}
+def lps_string(s):
+    """
+    Считаем сам палиндром (восстанавливая его)
+    """
+
+    memo = {} # Заготовка для кэширования(хранения результата).
+    # Рекурсия считала бы одно и то же много раз
 
     def dp(i, j):
         if (i, j) in memo:
             return memo[(i, j)]
 
         if i > j:
-            return 0
+            return ""
         if i == j:
-            return 1
+            return s[i]
 
         if s[i] == s[j]:
-            ans = dp(i + 1, j - 1) + 2
+            res = s[i] + dp(i+1, j-1) + s[j]
         else:
-            ans = max(dp(i + 1, j), dp(i, j - 1))
+            left = dp(i+1, j)
+            right = dp(i, j-1)
 
-        memo[(i, j)] = ans
-        return ans
+            if len(left) > len(right):
+                res = left
+            else:
+                res = right
 
-    return dp(0, n - 1)
+        memo[(i, j)] = res
+        return res
+
+    return dp(0, len(s)-1)
 
 
-# пример
-print(lps("character"))
+print(lps_string("character"))
