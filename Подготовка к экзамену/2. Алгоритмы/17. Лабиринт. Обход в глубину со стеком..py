@@ -1,22 +1,40 @@
 def get_maze_path_stack(maze, start, end):
     rows, cols = len(maze), len(maze[0])
-    stack = [(start, [start])]
     visited = set()
+    path = []
+    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+    stack = [(start[0], start[1], 0)]  # x, y, индекс направления
 
     while stack:
-        (r, c), path = stack.pop()
+        x, y, direction_index = stack[-1]
 
-        if (r, c) == end:
-            return path
+        # если первый раз пришли в клетку
+        if (x, y) not in visited:
+            visited.add((x, y))
+            path.append((x, y))
 
-        if (r, c) not in visited:
-            visited.add((r, c))
+            if (x, y) == end:
+                return path
 
-            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                nr, nc = r + dr, c + dc
-                if 0 <= nr < rows and 0 <= nc < cols and maze[nr][nc] == 0:
-                    if (nr, nc) not in visited:
-                        stack.append(((nr, nc), path + [(nr, nc)]))
+        # если все направления просмотрели — откат
+        if direction_index == 4:
+            stack.pop()
+            path.pop()
+            continue
+
+        # иначе пробуем следующее направление
+        dx, dy = directions[direction_index]
+        stack[-1] = (x, y, direction_index + 1)
+
+        nx, ny = x + dx, y + dy
+
+        if (0 <= nx < cols and
+            0 <= ny < rows and
+            maze[ny][nx] == 0 and
+            (nx, ny) not in visited):
+
+            stack.append((nx, ny, 0))
 
     return []
 
@@ -29,8 +47,7 @@ grid = [
     [0, 0, 0, 0, 0]
 ]
 
-start_point = (0, 0)
-end_point = (4, 4)
-
-result_path = get_maze_path_stack(grid, start_point, end_point)
+start = (0, 0)
+end = (0, 4)
+result_path = get_maze_path_stack(grid, start, end)
 print(result_path)
