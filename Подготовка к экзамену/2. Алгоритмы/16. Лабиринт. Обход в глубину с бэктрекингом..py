@@ -1,3 +1,4 @@
+# Очень сильно походит на рекурсивный метод
 def solve_maze_backtracking(maze, start, end):
     rows, cols = len(maze), len(maze[0])
     path = []

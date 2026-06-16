@@ -1,4 +1,19 @@
 def get_maze_path_stack(maze, start, end):
+    """
+    Обозначаем переменные rows, columns, visited, path, directions(направления(x, y)) и stack(точки старта и
+    индекс направления).
+    Пока наш стек не пустой:
+        достаем точки x, y и индекс направления
+        Если пришли в первый раз: добавление в посещенные и добавление в путь
+        Если точки = точки конца - возвращаем путь
+        Если просмотрели все направления (direction_index = 4), то откатываемся (stack.pop, path.pop, continue)
+        Иначе пробуем другие направления dx, dy
+        обновляем направление в стеке
+        nx, ny = x+dx ...
+        Если мы в необходимых рамках с направлениями nx, ny и точка не посещенная и не стена:
+            добавляем nx, ny, 0 направление в stack
+    Если ничего не вернулось - возвращаем пустой массив
+    """
     rows, cols = len(maze), len(maze[0])
     visited = set()
     path = []
@@ -29,11 +44,7 @@ def get_maze_path_stack(maze, start, end):
 
         nx, ny = x + dx, y + dy
 
-        if (0 <= nx < cols and
-            0 <= ny < rows and
-            maze[ny][nx] == 0 and
-            (nx, ny) not in visited):
-
+        if (0 <= nx < cols and 0 <= ny < rows and maze[ny][nx] == 0 and (nx, ny) not in visited):
             stack.append((nx, ny, 0))
 
     return []

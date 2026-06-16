@@ -1,29 +1,41 @@
-from collections import deque
-
-
 def get_maze_path_bfs(maze, start, end):
+    """
+    Достаем длину и ширину лабиринта, очередь с начальной точкой [start], посещенные точки с start, направления
+    Пока наша очередь не пуста:
+        Берем первую запись из очереди
+        Получаем x, y из нее
+        Если точка конечная - возврат действующего пути
+        Если нет - пробуем идти в других направлениях
+        Если мы находимся в нужных рамках:
+            Добавляем новую точку (после нового направления) в посещенные
+            Создаем новый путь и добавляем туда новые nx ny
+            добавляем в очередь новый путь
+    Иначе возвращаем []
+    """
     rows, cols = len(maze), len(maze[0])
-    # Очередь хранит кортежи: (текущая_клетка, путь_до_нее)
-    queue = deque([(start, [start])])
-    visited = set([start])
+    visited = {start}
+    queue = [[start]]
+    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
     while queue:
-        (r, c), path = queue.popleft()
+        current_path = queue.pop(0)
+        x, y = current_path[-1]
 
-        if (r, c) == end:
-            return path
+        if (x, y) == end:
+            return current_path
 
-        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            nr, nc = r + dr, c + dc
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
 
-            if 0 <= nr < rows and 0 <= nc < cols and maze[nr][nc] == 0:
-                if (nr, nc) not in visited:
-                    visited.add((nr, nc))
-                    queue.append(((nr, nc), path + [(nr, nc)]))
+            if 0 <= ny < rows and 0 <= nx < cols and maze[ny][nx] == 0 and (nx, ny) not in visited:
+                visited.add((nx, ny))
+                new_path = list(current_path)
+                new_path.append((nx, ny))
+                queue.append(new_path)
 
     return []
 
-
+# Пример использования:
 grid = [
     [0, 1, 0, 0, 0],
     [0, 1, 0, 1, 0],
@@ -32,8 +44,4 @@ grid = [
     [0, 0, 0, 0, 0]
 ]
 
-start_point = (0, 0)
-end_point = (4, 4)
-
-result_path = get_maze_path_bfs(grid, start_point, end_point)
-print(result_path)
+print(get_maze_path_bfs(grid, (0, 0), (4, 4)))
