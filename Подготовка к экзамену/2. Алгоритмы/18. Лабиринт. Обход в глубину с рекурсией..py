@@ -1,48 +1,41 @@
-def solve_maze(maze):
-    n = len(maze)
-    m = len(maze[0])
-
-    visited = [[False]*m for _ in range(n)]
+def get_maze_path(maze, start, end):
+    rows, cols = len(maze), len(maze[0])
+    visited = set()
     path = []
 
-    def dfs(x, y):
-        # проверка границ, стены и посещения
-        if x < 0 or x >= n or y < 0 or y >= m:
+    def dfs(r, c):
+        if r < 0 or r >= rows or c < 0 or c >= cols:
             return False
-        if maze[x][y] == 1 or visited[x][y]:
+        if maze[r][c] == 1 or (r, c) in visited:
             return False
 
-        # добавляем в путь
-        visited[x][y] = True
-        path.append((x, y))
+        visited.add((r, c))
+        path.append((r, c))
 
-        # если это цель
-        if x == n-1 and y == m-1:
+        if (r, c) == end:
             return True
 
-        # рекурсивно идём в 4 направления
-        if (dfs(x+1, y) or
-            dfs(x-1, y) or
-            dfs(x, y+1) or
-            dfs(x, y-1)):
+        if dfs(r - 1, c) or dfs(r + 1, c) or dfs(r, c - 1) or dfs(r, c + 1):
             return True
 
-        # откат (бэктрекинг)
         path.pop()
         return False
 
-    if dfs(0, 0):
+    if dfs(start[0], start[1]):
         return path
-    else:
-        return None
+    return []
 
 
-# пример
-maze = [
-    [0, 1, 0, 0],
-    [0, 0, 0, 1],
-    [1, 0, 1, 0],
-    [0, 0, 0, 0]
+grid = [
+    [0, 1, 0, 0, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0],
+    [1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0]
 ]
 
-print(solve_maze(maze))
+start_point = (0, 0)
+end_point = (4, 4)
+
+result_path = get_maze_path(grid, start_point, end_point)
+print(result_path)

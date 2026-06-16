@@ -1,40 +1,36 @@
-def solve_maze(maze):
-    n = len(maze)
-    m = len(maze[0])
-
-    visited = [[False]*m for _ in range(n)]
-
-    # стек: (координаты, текущий путь)
-    stack = [((0, 0), [(0, 0)])]
-    visited[0][0] = True
-
-    # направления: вниз, вверх, вправо, влево
-    directions = [(1,0), (-1,0), (0,1), (0,-1)]
+def get_maze_path_stack(maze, start, end):
+    rows, cols = len(maze), len(maze[0])
+    stack = [(start, [start])]
+    visited = set()
 
     while stack:
-        (x, y), path = stack.pop()
+        (r, c), path = stack.pop()
 
-        # дошли до цели
-        if (x, y) == (n-1, m-1):
+        if (r, c) == end:
             return path
 
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
+        if (r, c) not in visited:
+            visited.add((r, c))
 
-            if 0 <= nx < n and 0 <= ny < m:
-                if maze[nx][ny] == 0 and not visited[nx][ny]:
-                    visited[nx][ny] = True
-                    stack.append(((nx, ny), path + [(nx, ny)]))
+            for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                nr, nc = r + dr, c + dc
+                if 0 <= nr < rows and 0 <= nc < cols and maze[nr][nc] == 0:
+                    if (nr, nc) not in visited:
+                        stack.append(((nr, nc), path + [(nr, nc)]))
 
-    return None  # пути нет
+    return []
 
 
-# пример
-maze = [
-    [0, 1, 0, 0],
-    [0, 0, 0, 1],
-    [1, 0, 1, 0],
-    [0, 0, 0, 0]
+grid = [
+    [0, 1, 0, 0, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0],
+    [1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0]
 ]
 
-print(solve_maze(maze))
+start_point = (0, 0)
+end_point = (4, 4)
+
+result_path = get_maze_path_stack(grid, start_point, end_point)
+print(result_path)

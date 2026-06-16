@@ -1,48 +1,47 @@
-def solve_maze(maze: list[list[int]]) -> bool:
-    n = len(maze)
-    m = len(maze[0])
-
-    visited = [[False] * m for _ in range(n)]
+def solve_maze_backtracking(maze, start, end):
+    rows, cols = len(maze), len(maze[0])
     path = []
+    visited = set()
 
-    def dfs(x, y):
-        # выход за границы или стена или уже посещали
-        if x < 0 or x >= n or y < 0 or y >= m:
+    def backtrack(r, c):
+        # Базовые проверки (границы, стены, уже посещенные)
+        if r < 0 or r >= rows or c < 0 or c >= cols:
             return False
-        if maze[x][y] == 1 or visited[x][y]:
+        if maze[r][c] == 1 or (r, c) in visited:
             return False
 
-        # добавляем клетку в путь
-        path.append((x, y))
-        visited[x][y] = True
+        # 1. ДЕЛАЕМ ВЫБОР (добавляем шаг в путь)
+        visited.add((r, c))
+        path.append((r, c))
 
-        # если дошли до цели
-        if x == n - 1 and y == m - 1:
+        # Если дошли до финиша — останавливаемся
+        if (r, c) == end:
             return True
 
-        # пробуем все направления
-        if (dfs(x + 1, y) or
-                dfs(x - 1, y) or
-                dfs(x, y + 1) or
-                dfs(x, y - 1)):
-            return True
+        # 2. ИССЛЕДУЕМ ВАРИАНТЫ (идем в 4 стороны)
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            if backtrack(r + dr, c + dc):
+                return True
 
-        # бэктрекинг (откат)
+        # 3. ОТМЕНЯЕМ ВЫБОР (бэктрекинг - зашли в тупик, удаляем шаг)
         path.pop()
         return False
 
-    if dfs(0, 0):
+    if backtrack(start[0], start[1]):
         return path
-    else:
-        return None
+    return []
 
 
-# пример
-maze = [
-    [0, 1, 0, 0],
-    [0, 0, 0, 1],
-    [1, 0, 1, 0],
-    [0, 0, 0, 0]
+grid = [
+    [0, 1, 0, 0, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0],
+    [1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0]
 ]
 
-print(solve_maze(maze))
+start_point = (0, 0)
+end_point = (4, 4)
+
+result_path = solve_maze_backtracking(grid, start_point, end_point)
+print(result_path)

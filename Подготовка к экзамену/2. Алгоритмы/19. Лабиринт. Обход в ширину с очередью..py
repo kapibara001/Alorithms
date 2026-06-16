@@ -1,42 +1,39 @@
 from collections import deque
 
-def solve_maze(maze):
-    n = len(maze)
-    m = len(maze[0])
 
-    visited = [[False]*m for _ in range(n)]
-    queue = deque()
-
-    # (координаты, путь)
-    queue.append(((0, 0), [(0, 0)]))
-    visited[0][0] = True
-
-    directions = [(1,0), (-1,0), (0,1), (0,-1)]
+def get_maze_path_bfs(maze, start, end):
+    rows, cols = len(maze), len(maze[0])
+    # Очередь хранит кортежи: (текущая_клетка, путь_до_нее)
+    queue = deque([(start, [start])])
+    visited = set([start])
 
     while queue:
-        (x, y), path = queue.popleft()
+        (r, c), path = queue.popleft()
 
-        # если дошли до цели
-        if (x, y) == (n-1, m-1):
+        if (r, c) == end:
             return path
 
-        for dx, dy in directions:
-            nx, ny = x + dx, y + dy
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nr, nc = r + dr, c + dc
 
-            if 0 <= nx < n and 0 <= ny < m:
-                if maze[nx][ny] == 0 and not visited[nx][ny]:
-                    visited[nx][ny] = True
-                    queue.append(((nx, ny), path + [(nx, ny)]))
+            if 0 <= nr < rows and 0 <= nc < cols and maze[nr][nc] == 0:
+                if (nr, nc) not in visited:
+                    visited.add((nr, nc))
+                    queue.append(((nr, nc), path + [(nr, nc)]))
 
-    return None  # пути нет
+    return []
 
 
-# пример
-maze = [
-    [0, 1, 0, 0],
-    [0, 0, 0, 1],
-    [1, 0, 1, 0],
-    [0, 0, 0, 0]
+grid = [
+    [0, 1, 0, 0, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0],
+    [1, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0]
 ]
 
-print(solve_maze(maze))
+start_point = (0, 0)
+end_point = (4, 4)
+
+result_path = get_maze_path_bfs(grid, start_point, end_point)
+print(result_path)
