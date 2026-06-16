@@ -1,3 +1,6 @@
+from pyparsing import autoname_elements
+
+
 def binary_search(arr, t):
     left = 0
     right = len(arr) - 1
@@ -272,3 +275,129 @@ print("Поиск максимального квадрата из нулей в
         [1, 0, 1],
         [1, 0, 1]
 ]))
+
+
+def get_maze_path_recursive(maze, start, end):
+    rows, columns = len(maze), len(maze[0])
+    visited = set()
+    path = []
+
+    def dfs(x, y):
+        if x < 0 or x >= columns or y < 0 or y >= rows:
+            return False
+        if maze[y][x] == 1 or (x, y) in visited:
+            return False
+
+        visited.add((x, y))
+        path.append((x, y))
+
+        if (x, y) == end:
+            return True
+
+        if dfs(x+1, y) or dfs(x-1, y) or dfs(x, y+1) or dfs(x, y-1):
+            return True
+
+        path.pop()
+        return False
+
+    if dfs(start[0], start[1]):
+        return path
+    return []
+
+
+def get_maze_path_stack(maze, start, end):
+    rows, cols = len(maze), len(maze[0])
+    path = []
+    visited = set()
+    directions = [(1, 0), (-1, 0), (0, -1), (0, 1)]
+    stack = [(start[0], start[1], 0)]
+
+    while stack:
+        x, y, direction_index = stack[-1]
+
+        if (x, y) not in visited:
+            visited.add((x, y))
+            path.append((x, y))
+            if (x, y) == end:
+                return path
+
+        if direction_index == 4:
+            stack.pop()
+            path.pop()
+            continue
+
+        dx, dy = directions[direction_index]
+        stack[-1] = (x, y, direction_index + 1)
+
+        nx, ny = x + dx, y + dy
+        if (0 <= nx < cols) and (0 <= ny < rows) and (maze[ny][nx] != 1) and ((nx, ny) not in visited):
+            stack.append((nx, ny, 0))
+
+    return []
+
+
+def get_maze_path_backtracking(maze, start, end):
+    rows, cols = len(maze), len(maze[0])
+    visited = set()
+    path = []
+
+    def backtracking(x, y):
+        if x < 0 or x > cols or y < 0 or y > rows:
+            return False
+        if maze[y][x] == 1 or (x, y) in visited:
+            return False
+
+        visited.add((x, y))
+        path.append((x, y))
+
+        if (x, y) == end:
+            return True
+
+        if backtracking(x + 1, y) or backtracking(x - 1, y) or backtracking(x, y - 1) or backtracking(x, y + 1):
+            return True
+
+        path.pop()
+        return False
+
+    if backtracking(start[0], start[1]):
+        return path
+    return []
+
+
+def get_maze_path_queue(maze, start, end):
+    rows, cols = len(maze), len(maze[0])
+    visited = {start}
+    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    queue = [[start]]
+
+    while queue:
+        cur_path = queue.pop(0)
+        x, y = cur_path[-1]
+
+        if (x, y) == end:
+            return cur_path
+
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+
+            if (0 <= nx < cols) and (0 <= ny < rows) and (maze[ny][nx] != 1) and ((nx, ny) not in visited):
+                visited.add((nx, ny))
+                new_path = list(cur_path)
+                new_path.append((nx, ny))
+                queue.append(new_path)
+
+    return []
+
+start = (0, 0)
+end = (4, 4)
+maze = [
+    [0, 0, 0, 0, 1],
+    [1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1],
+    [0, 0, 0, 0, 0],
+]
+print(get_maze_path_recursive(maze, start, end))
+print(get_maze_path_stack(maze, start, end))
+print(get_maze_path_backtracking(maze, start, end))
+print(get_maze_path_queue(maze, start, end))

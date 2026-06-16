@@ -3,19 +3,19 @@ def get_maze_path(maze, start, end):
     visited = set()
     path = []
 
-    def dfs(r, c):
-        if r < 0 or r >= rows or c < 0 or c >= cols:
+    def dfs(x, y):
+        if x < 0 or x >= cols or y < 0 or y >= rows:
             return False
-        if maze[r][c] == 1 or (r, c) in visited:
+        if maze[y][x] == 1 or (x, y) in visited:
             return False
 
-        visited.add((r, c))
-        path.append((r, c))
+        visited.add((x, y))
+        path.append((x, y))
 
-        if (r, c) == end:
+        if (x, y) == end:
             return True
 
-        if dfs(r - 1, c) or dfs(r + 1, c) or dfs(r, c - 1) or dfs(r, c + 1):
+        if dfs(x - 1, y) or dfs(x + 1, y) or dfs(x, y - 1) or dfs(x, y + 1):
             return True
 
         path.pop()
